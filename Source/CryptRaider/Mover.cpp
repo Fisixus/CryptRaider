@@ -24,7 +24,7 @@ void UMover::BeginPlay()
 	
 }
 
-void UMover::Move(float DeltaTime) const
+void UMover::Move(const float& DeltaTime) const
 {
 	const FVector CurrentLocation =  GetOwner() -> GetActorLocation();
 	const FVector TargetPos = StartingPos + MoveOffset;

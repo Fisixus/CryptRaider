@@ -32,6 +32,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	bool ShouldOpen;
 
-	void Move(float DeltaTime) const;
+	void Move(const float& DeltaTime) const;
 	FVector StartingPos;
 };
