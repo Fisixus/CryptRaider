@@ -3,6 +3,9 @@
 
 #include "Grabber.h"
 
+#include "GrableActors.h"
+#include "TriggerComponent.h"
+
 // Sets default values for this component's properties
 UGrabber::UGrabber()
 {
@@ -48,6 +51,9 @@ void UGrabber::Grab()
 	bool HasHit = FindTheTargetStatue(Hit,StartVec, EndVec, Channel);
 	if(HasHit)
 	{
+		ActiveGrableActor = reinterpret_cast<AGrableActors*>(Hit.GetActor());
+		ActiveGrableActor->SetGrableSituation(true);
+		
 		Hit.GetComponent()->WakeAllRigidBodies();
 		PhysicsHandle->GrabComponentAtLocationWithRotation(
 			Hit.GetComponent(),
@@ -67,6 +73,8 @@ void UGrabber::Release()
 	if(GrabbedComponent != nullptr)
 	{
 		PhysicsHandle->ReleaseComponent();
+		ActiveGrableActor->SetGrableSituation(false);
+		ActiveGrableActor = nullptr;
 	}
 }
 

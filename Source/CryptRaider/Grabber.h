@@ -6,15 +6,10 @@
 #include "Components/SceneComponent.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "GrableActors.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
-UENUM(BlueprintType)
-enum EGrableObjects 
-{
-	Gargoyle = 0, 
-	Something = 1, 
-};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class CRYPTRAIDER_API UGrabber : public USceneComponent
@@ -48,4 +43,5 @@ private:
 	UPhysicsHandleComponent* PhysicsHandle;
 	bool FindTheTargetStatue(FHitResult& Hit, const FVector& Start, const FVector& End,
 	                         const ECollisionChannel ColChannel) const;
+	AGrableActors* ActiveGrableActor;
 };

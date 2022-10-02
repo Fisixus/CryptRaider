@@ -3,6 +3,8 @@
 
 #include "TriggerComponent.h"
 
+#include "GrableActors.h"
+
 UTriggerComponent::UTriggerComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -16,20 +18,35 @@ void UTriggerComponent::BeginPlay()
 	
 }
 
-void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-	FActorComponentTickFunction* ThisTickFunction)
+AActor* UTriggerComponent::GetAcceptableActor() const
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	//UE_LOG(LogTemp,Display,TEXT("%f"),GetWorld()->TimeSeconds);
+
 	TArray<AActor*> OverlappingActors;
 	GetOverlappingActors(OverlappingActors);
 	if(OverlappingActors.Num() > 0)
 	{
 		for (auto OverlappingActor : OverlappingActors)
 		{
-			if(OverlappingActor->ActorHasTag(*AcceptableTagName))
+			const AGrableActors* ActiveGrableActor = reinterpret_cast<AGrableActors*>(OverlappingActor);
+			if(ActiveGrableActor != nullptr && ActiveGrableActor->ActorHasTag(*AcceptableTagName)  && !ActiveGrableActor->GetGrableSituation())
 			{
-				UE_LOG(LogTemp, Display, TEXT("%s"),*(OverlappingActor->GetActorNameOrLabel()));
+				return OverlappingActor;
 			}
 		}
 	}
+	return nullptr;
 }
+
+void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	const AActor* AcceptableActor = GetAcceptableActor();
+	if(AcceptableActor != nullptr)
+	{
+		UE_LOG(LogTemp,Display,TEXT("%s"),*(AcceptableActor->GetActorNameOrLabel()));
+		//TODO Trigger
+	}
+}
+
