@@ -51,9 +51,10 @@ void UGrabber::Grab()
 	bool HasHit = FindTheTargetStatue(Hit,StartVec, EndVec, Channel);
 	if(HasHit)
 	{
-		ActiveGrableActor = reinterpret_cast<AGrableActors*>(Hit.GetActor());
+		//Hit.GetActor()->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		ActiveGrableActor = dynamic_cast<AGrableActors*>(Hit.GetActor());
 		ActiveGrableActor->SetGrableSituation(true);
-		
+		//Hit.GetActor()->Tags.Add("Grabbed");
 		Hit.GetComponent()->WakeAllRigidBodies();
 		PhysicsHandle->GrabComponentAtLocationWithRotation(
 			Hit.GetComponent(),
@@ -72,6 +73,7 @@ void UGrabber::Release()
 	const auto GrabbedComponent = PhysicsHandle->GetGrabbedComponent();
 	if(GrabbedComponent != nullptr)
 	{
+		//GrabbedComponent->GetOwner()->Tags.Remove("Grabbed");
 		PhysicsHandle->ReleaseComponent();
 		ActiveGrableActor->SetGrableSituation(false);
 		ActiveGrableActor = nullptr;

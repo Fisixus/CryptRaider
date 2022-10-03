@@ -29,8 +29,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void SetGrableSituation(bool newStatus){isGrabbed = newStatus;}
-	bool GetGrableSituation() const {return isGrabbed;}
+	void SetGrableSituation(bool newStatus);
+	bool GetGrableSituation() const;
 private:
 	UPROPERTY(EditAnywhere)
 	TEnumAsByte<EGrableObjects> Type;

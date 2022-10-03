@@ -18,10 +18,22 @@ void AGrableActors::BeginPlay()
 	
 }
 
+void AGrableActors::SetGrableSituation(bool newStatus)
+{
+	isGrabbed = newStatus;
+}
+
+bool AGrableActors::GetGrableSituation() const
+{
+	return isGrabbed;
+}
+
 // Called every frame
 void AGrableActors::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
+
+
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Mover.h"
 #include "Components/BoxComponent.h"
 #include "TriggerComponent.generated.h"
 
@@ -26,11 +27,15 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	AActor* GetAcceptableActor() const;
-
+	UFUNCTION(BlueprintCallable)
+	void SetMover(UMover* Mover);
+	
 
 private:
 	UPROPERTY(EditAnywhere)
 	FString AcceptableTagName;
+
+	UMover* Mover = nullptr;
+	AActor* GetAcceptableActor() const;
 
 };

@@ -28,7 +28,7 @@ AActor* UTriggerComponent::GetAcceptableActor() const
 	{
 		for (auto OverlappingActor : OverlappingActors)
 		{
-			const AGrableActors* ActiveGrableActor = reinterpret_cast<AGrableActors*>(OverlappingActor);
+			const AGrableActors* ActiveGrableActor = dynamic_cast<AGrableActors*>(OverlappingActor);
 			if(ActiveGrableActor != nullptr && ActiveGrableActor->ActorHasTag(*AcceptableTagName)  && !ActiveGrableActor->GetGrableSituation())
 			{
 				return OverlappingActor;
@@ -38,15 +38,53 @@ AActor* UTriggerComponent::GetAcceptableActor() const
 	return nullptr;
 }
 
+void UTriggerComponent::SetMover(UMover* NewMover)
+{
+	Mover = NewMover;
+}
+
 void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	const AActor* AcceptableActor = GetAcceptableActor();
-	if(AcceptableActor != nullptr)
+	AActor* AcceptableActor = GetAcceptableActor();
+	if(Mover != nullptr && AcceptableActor != nullptr)
 	{
-		UE_LOG(LogTemp,Display,TEXT("%s"),*(AcceptableActor->GetActorNameOrLabel()));
-		//TODO Trigger
+		//const auto SceneComp = AcceptableActor->GetRootComponent();
+		auto SubComponents = AcceptableActor -> GetComponents();
+		for (auto SubComponent : SubComponents)
+		{
+			//SubComponent->DestroyPhysicsState();
+			UPrimitiveComponent* PrimitiveComponent =  Cast<UPrimitiveComponent>(SubComponent);
+			if(PrimitiveComponent != nullptr)
+			{
+				PrimitiveComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+				//PrimitiveComponent->SetSimulatePhysics(false);
+				//UE_LOG(LogTemp,Display,TEXT("%s"),*(AcceptableActor->GetActorNameOrLabel()));
+
+			}
+		}
+		AcceptableActor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
+		Mover->OpenSecretDoor(nullptr);
+		Mover = nullptr;
+		//AcceptableActor = nullptr;
+		// 	//TODO Trigger Animation first
+		
+		// if(PrimitiveComponent != nullptr)
+		// {
+		// 	UE_LOG(LogTemp,Display,TEXT("%s"),*(AcceptableActor->GetActorNameOrLabel()));
+		// 	PrimitiveComponent->SetSimulatePhysics(false);
+		// 	PrimitiveComponent -> AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
+		// 	Mover->OpenSecretDoor();
+		// 	AcceptableActor = nullptr;
+		// }
+		// else
+		// {
+		// 	UE_LOG(LogTemp,Display,TEXT("NOPEE"));
+		//
+		// }
 	}
 }
+
+
 
