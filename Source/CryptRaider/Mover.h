@@ -23,7 +23,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void OpenSecretDoor(AActor* AttachedActor);
+	void SetShouldOpen(bool SOpen);
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -33,8 +33,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	bool ShouldOpen;
 
-	void Move(AActor* Ac, const float& DeltaTime) const;
+	void Move(AActor* Ac, const float& DeltaTime, FVector TargetPos) const;
 	FVector StartingPos;
-	TArray<AActor*> AllActors;
 
 };

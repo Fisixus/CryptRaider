@@ -26,11 +26,19 @@ AActor* UTriggerComponent::GetAcceptableActor() const
 	GetOverlappingActors(OverlappingActors);
 	if(OverlappingActors.Num() > 0)
 	{
+
 		for (auto OverlappingActor : OverlappingActors)
 		{
+
 			const AGrableActors* ActiveGrableActor = dynamic_cast<AGrableActors*>(OverlappingActor);
+			//UE_LOG(LogTemp,Display,TEXT("ZZZZ %s"),*ActiveGrableActor->GetName());
+			
+			//UE_LOG(LogTemp,Display,TEXT("FFF %d"),ActiveGrableActor->ActorHasTag(*AcceptableTagName));
+
 			if(ActiveGrableActor != nullptr && ActiveGrableActor->ActorHasTag(*AcceptableTagName)  && !ActiveGrableActor->GetGrableSituation())
 			{
+				//UE_LOG(LogTemp,Display,TEXT("OA %s"),*(OverlappingActor->GetActorNameOrLabel()));
+
 				return OverlappingActor;
 			}
 		}
@@ -41,6 +49,7 @@ AActor* UTriggerComponent::GetAcceptableActor() const
 void UTriggerComponent::SetMover(UMover* NewMover)
 {
 	Mover = NewMover;
+
 }
 
 void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -51,23 +60,23 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if(Mover != nullptr && AcceptableActor != nullptr)
 	{
 		//const auto SceneComp = AcceptableActor->GetRootComponent();
-		auto SubComponents = AcceptableActor -> GetComponents();
-		for (auto SubComponent : SubComponents)
-		{
-			//SubComponent->DestroyPhysicsState();
-			UPrimitiveComponent* PrimitiveComponent =  Cast<UPrimitiveComponent>(SubComponent);
-			if(PrimitiveComponent != nullptr)
-			{
-				PrimitiveComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-				//PrimitiveComponent->SetSimulatePhysics(false);
-				//UE_LOG(LogTemp,Display,TEXT("%s"),*(AcceptableActor->GetActorNameOrLabel()));
-
-			}
-		}
+		// auto SubComponents = AcceptableActor -> GetComponents();
+		// for (auto SubComponent : SubComponents)
+		// {
+		// 	//SubComponent->DestroyPhysicsState();
+		// 	UPrimitiveComponent* PrimitiveComponent =  Cast<UPrimitiveComponent>(SubComponent);
+		// 	if(PrimitiveComponent != nullptr)
+		// 	{
+		// 		//PrimitiveComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		// 		//PrimitiveComponent->SetSimulatePhysics(false);
+		// 		//UE_LOG(LogTemp,Display,TEXT("%s"),*(AcceptableActor->GetActorNameOrLabel()));
+		//
+		// 	}
+		// }
 		AcceptableActor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
-		Mover->OpenSecretDoor(nullptr);
-		Mover = nullptr;
-		//AcceptableActor = nullptr;
+		Mover->SetShouldOpen(true);
+
+		AcceptableActor = nullptr;
 		// 	//TODO Trigger Animation first
 		
 		// if(PrimitiveComponent != nullptr)
@@ -83,6 +92,11 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		// 	UE_LOG(LogTemp,Display,TEXT("NOPEE"));
 		//
 		// }
+	}
+	else
+	{
+		Mover->SetShouldOpen(false);
+
 	}
 }
 

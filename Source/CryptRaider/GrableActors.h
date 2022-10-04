@@ -10,7 +10,7 @@ UENUM(BlueprintType)
 enum EGrableObjects 
 {
 	Gargoyle = 0, 
-	Something = 1, 
+	Statue = 1, 
 };
 
 UCLASS()

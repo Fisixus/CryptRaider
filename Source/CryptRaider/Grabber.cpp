@@ -55,7 +55,9 @@ void UGrabber::Grab()
 		ActiveGrableActor = dynamic_cast<AGrableActors*>(Hit.GetActor());
 		ActiveGrableActor->SetGrableSituation(true);
 		//Hit.GetActor()->Tags.Add("Grabbed");
+		Hit.GetComponent()->SetSimulatePhysics(true);
 		Hit.GetComponent()->WakeAllRigidBodies();
+		Hit.GetActor()->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		PhysicsHandle->GrabComponentAtLocationWithRotation(
 			Hit.GetComponent(),
 			NAME_None,

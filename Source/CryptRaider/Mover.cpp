@@ -24,11 +24,10 @@ void UMover::BeginPlay()
 	
 }
 
-void UMover::Move(AActor* Ac, const float& DeltaTime) const
+void UMover::Move(AActor* Ac, const float& DeltaTime, FVector TargetPos) const
 {
 	const FVector CurrentLocation =  Ac -> GetActorLocation();
-	const FVector TargetPos = StartingPos + MoveOffset;
-	const float Speed = FVector::Distance(TargetPos, StartingPos)/MoveTime;
+	const float Speed = MoveOffset.Length()/MoveTime;  //FVector::Distance(TargetPos, StartingPos)/MoveTime;
 	//const FVector NewPos = 	FMath::Lerp(CurrentLocation, TargetPos, ((DeltaTime*4)/0.5f)*((DeltaTime*4)/0.5f));
 	const FVector NewPos = FMath::VInterpConstantTo(CurrentLocation, TargetPos, DeltaTime, Speed);
 	//UE_LOG(LogTemp,Display,TEXT("%v"), *(NewPos.ToString()));
@@ -36,30 +35,26 @@ void UMover::Move(AActor* Ac, const float& DeltaTime) const
 
 }
 
-void UMover::OpenSecretDoor(AActor* AttachedActor)
+void UMover::SetShouldOpen(bool SOpen)
 {
-	AllActors.Add(GetOwner());
-	AllActors.Add(AttachedActor);
+	ShouldOpen = SOpen;
+
+	//AllActors.Add(GetOwner());
+	//AllActors.Add(AttachedActor);
 	//GetOwner()->GetAllChildActors(AllActors);
-	ShouldOpen = true;
 }
 
 // Called every frame
 void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	FVector TargetPos = StartingPos;
 	if(ShouldOpen)
 	{
-		for (const auto Ac : AllActors)
-		{
-			if(Ac != nullptr)
-			{
-				UE_LOG(LogTemp,Display,TEXT("%s"),*(Ac->GetActorNameOrLabel()));
-				Move(Ac, DeltaTime);
-			}
-			
-		}
+		TargetPos = StartingPos + MoveOffset;
 	}
+	Move(GetOwner(), DeltaTime, TargetPos);
+	
 	//FVector vec = GetOwner()->GetActorLocation();
 	//FString s = vec.ToCompactString();
 	//UE_LOG(LogTemp,Display,TEXT("%s"), *s);
